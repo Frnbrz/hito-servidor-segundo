@@ -1,15 +1,15 @@
 
-import ThemeProvider from '@/components/atoms/theme'
-import { ModeToggle } from '@/components/atoms/theme/mode-toggle'
-import { BrowserRouter as Router, Routes } from 'react-router-dom'
+import { Navbar, ThemeProvider } from '@/components'
+import { Tasks } from '@/pages'
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Router>
-        <ModeToggle />
+        <Navbar />
         <Routes>
-          {/* Define your routes here */}
+          <Route path="/" element={<Tasks />} />
         </Routes>
       </Router>
     </ThemeProvider>
