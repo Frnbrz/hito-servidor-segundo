@@ -1,5 +1,4 @@
-import { IconProps } from "@/types/logo.types"
-
+import { IconProps } from "@/types/logo.types";
 
 const GripHorizontal = (props: IconProps): JSX.Element => {
   return (
@@ -22,7 +21,7 @@ const GripHorizontal = (props: IconProps): JSX.Element => {
       <circle cx="19" cy="15" r="1" />
       <circle cx="5" cy="15" r="1" />
     </svg>
-  )
-}
+  );
+};
 
-export default GripHorizontal
+export default GripHorizontal;

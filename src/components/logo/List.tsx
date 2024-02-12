@@ -1,5 +1,4 @@
-import { IconProps } from "@/types/logo.types"
-
+import { IconProps } from "@/types/logo.types";
 
 const List = (props: IconProps): JSX.Element => {
   return (
@@ -22,7 +21,7 @@ const List = (props: IconProps): JSX.Element => {
       <line x1="3" x2="3.01" y1="12" y2="12" />
       <line x1="3" x2="3.01" y1="18" y2="18" />
     </svg>
-  )
-}
+  );
+};
 
-export default List
+export default List;

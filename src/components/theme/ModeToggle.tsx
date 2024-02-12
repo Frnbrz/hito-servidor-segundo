@@ -1,15 +1,15 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "./ThemeProvider"
+} from "@/components/ui/dropdown-menu";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "./ThemeProvider";
 
 function ModeToggle() {
-  const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
@@ -32,7 +32,7 @@ function ModeToggle() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 
-export default ModeToggle
+export default ModeToggle;

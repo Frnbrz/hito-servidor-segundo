@@ -1,9 +1,6 @@
-
-import Logos from "@/components/logo"
-import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom"
-
-
+import Logos from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 function Tasks() {
   return (
@@ -65,11 +62,15 @@ function Tasks() {
               <div className="grid gap-4 mt-4">
                 <div className="rounded-lg border border-dashed border-gray-200 p-4 dark:border-gray-800">
                   <h3 className="font-semibold">Buy groceries</h3>
-                  <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">Fruits, vegetables, milk</p>
+                  <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">
+                    Fruits, vegetables, milk
+                  </p>
                 </div>
                 <div className="rounded-lg border border-dashed border-gray-200 p-4 dark:border-gray-800">
                   <h3 className="font-semibold">Call mom</h3>
-                  <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">Wish her happy birthday</p>
+                  <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">
+                    Wish her happy birthday
+                  </p>
                 </div>
               </div>
             </div>
@@ -85,7 +86,9 @@ function Tasks() {
               <div className="grid gap-4 mt-4">
                 <div className="rounded-lg border border-dashed border-gray-200 p-4 dark:border-gray-800">
                   <h3 className="font-semibold">Design wireframes</h3>
-                  <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">For the new landing page</p>
+                  <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">
+                    For the new landing page
+                  </p>
                 </div>
               </div>
             </div>
@@ -102,7 +105,9 @@ function Tasks() {
               <div className="grid gap-4 mt-4">
                 <div className="rounded-lg border border-dashed border-gray-200 p-4 dark:border-gray-800">
                   <h3 className="font-semibold">Write report</h3>
-                  <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">Quarterly earnings</p>
+                  <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">
+                    Quarterly earnings
+                  </p>
                 </div>
               </div>
             </div>
@@ -110,7 +115,7 @@ function Tasks() {
         </main>
       </div>
     </div>
-  )
+  );
 }
 
-export default Tasks
+export default Tasks;

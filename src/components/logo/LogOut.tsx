@@ -1,6 +1,6 @@
 import { IconProps } from "@/types/logo.types";
 
-const Plus = (props: IconProps): JSX.Element => {
+const LogOut = (props: IconProps): JSX.Element => {
   return (
     <svg
       {...props}
@@ -14,10 +14,11 @@ const Plus = (props: IconProps): JSX.Element => {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M5 12h14" />
-      <path d="M12 5v14" />
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" x2="9" y1="12" y2="12" />
     </svg>
   );
 };
 
-export default Plus;
+export default LogOut;
