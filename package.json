@@ -87,10 +87,10 @@
     "vite-preset-react": "2.3.0",
     "vitest": "^0.34.5"
   },
- "husky": {
-  "hooks": {
-    "pre-commit": "lint-staged",
-    "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
-}
 }
