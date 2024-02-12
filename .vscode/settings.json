@@ -1,5 +1,3 @@
 {
-  "exportall.config.relExclusion": [
-    "/src/components/ui/index.ts"
-  ]
+  "exportall.config.relExclusion": ["/src/components/ui/index.ts"]
 }

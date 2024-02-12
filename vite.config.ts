@@ -1,9 +1,9 @@
-import react from "@vitejs/plugin-react"
-import * as path from 'path'
-import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react";
+import * as path from "path";
+import { defineConfig } from "vite";
 
 export default defineConfig((configEnv) => {
-  const isDevelopment = configEnv.mode === "development"
+  const isDevelopment = configEnv.mode === "development";
 
   return {
     plugins: [react()],
@@ -16,7 +16,7 @@ export default defineConfig((configEnv) => {
       setupFiles: "./src/infrastructure/tests.setup.ts",
     },
     resolve: {
-      alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
+      alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],
     },
     css: {
       modules: {
@@ -25,5 +25,5 @@ export default defineConfig((configEnv) => {
           : "[hash:base64:5]",
       },
     },
-  }
-})
+  };
+});
