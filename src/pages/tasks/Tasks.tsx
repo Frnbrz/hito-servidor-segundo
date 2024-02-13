@@ -7,8 +7,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import {
   DndContext,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   closestCenter,
@@ -24,89 +27,97 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Tasks() {
+  const { toast } = useToast();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor)
   );
 
-  const [columns, setColumns] = useState([
+  const [tasks, setTasks] = useState([
     {
-      id: "todo",
-      title: "To Do",
-      items: [
-        {
-          id: "1",
-          title: "Buy groceries",
-          description: "Fruits, vegetables, milk",
-        },
-        {
-          id: "2",
-          title: "Comprar Chuches",
-          description: "Fruits, vegetables, milk",
-        },
-      ],
+      id: "1",
+      title: "Comprar Comida",
+      description: "description",
+      column: "todo",
     },
     {
-      id: "inProgress",
-      title: "In Progress",
-      items: [
-        {
-          id: "1",
-          title: "Design wireframes",
-          description: "For the new landing page",
-        },
-      ],
+      id: "2",
+      title: "Comprar Comida 2",
+      description: "description",
+      column: "todo",
     },
     {
-      id: "done",
-      title: "Done",
-      items: [
-        { id: "1", title: "Write report", description: "Quarterly earnings" },
-      ],
+      id: "3",
+      title: "Diseñar Landing Page",
+      description: "description",
+      column: "inProgress",
+    },
+    {
+      id: "4",
+      title: "Reporte",
+      description: "description",
+      column: "done",
     },
   ]);
 
-  console.log(columns);
+  const columns = [
+    {
+      id: 1,
+      name: "todo",
+      title: "To do",
+    },
+    {
+      id: 2,
+      name: "inProgress",
+      title: "In Progress",
+    },
+    {
+      id: 3,
+      name: "done",
+      title: "Done",
+    },
+  ];
+
+  console.log(tasks);
 
   function handleAddTask(columnId: string) {
-    const task = {
-      id: "3",
-      title: "New task",
-      description: "Description",
+    const newTask = {
+      id: `${tasks.length + 1}`,
+      title: "New Task",
+      description: "description",
+      column: columnId,
     };
-
-    setColumns((columns) => {
-      const newColumns = columns.map((column) => {
-        if (column.id === columnId) {
-          return {
-            ...column,
-            items: [...column.items, task],
-          };
-        }
-
-        return column;
-      });
-
-      return newColumns;
-    });
+    setTasks((tasks) => [...tasks, newTask]);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDragEnd = (event: { active: any; over: any }) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
-      const activeColumn = columns.find((column) => column.id === active.id);
-      const overColumn = columns.find((column) => column.id === over.id);
-      const activeIndex = activeColumn?.items.findIndex(
-        (item) => item.id === active.data.id
+    if (active.id === over?.id) {
+      return;
+    }
+
+    setTasks((tasks) => {
+      const newTasks = [...tasks];
+
+      const sourceTaskIndex = newTasks.findIndex(
+        (task) => task.id === active.id
+      );
+      const targetTaskIndex = newTasks.findIndex(
+        (task) => task.id === over?.id
       );
 
-      if (activeColumn && overColumn && activeIndex !== undefined) {
-        const [removed] = activeColumn.items.splice(activeIndex, 1);
-        overColumn.items.push(removed);
+      const sourceColumn = newTasks[sourceTaskIndex]?.column; // Ensure column exists
+      const targetColumn = newTasks[targetTaskIndex]?.column; // Ensure column exists
+
+      const activeTask = newTasks[sourceTaskIndex];
+
+      if (sourceColumn && targetColumn) {
+        activeTask.column = targetColumn;
       }
-    }
+
+      return newTasks;
+    });
   };
 
   const SortableItem = ({
@@ -132,7 +143,7 @@ function Tasks() {
         }}
         {...attributes}
         {...listeners}
-        className="rounded-lg border border-dashed border-gray-200 p-4 dark:border-gray-800"
+        className="rounded-lg  px-3 py-2 bg-gray-200 dark:bg-gray-700"
       >
         <h3 className="font-semibold">{title}</h3>
         <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">
@@ -148,9 +159,9 @@ function Tasks() {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex min-h-screen w-full">
+      <div className="flex min-h-[93vh] w-full">
         <div className="hidden lg:flex flex-col w-[300px] border-r bg-gray-100/40 dark:bg-gray-800/40">
-          <div className="flex h-[60px] items-center border-b px-6">
+          <div className="flex h-[56px] items-center border-b px-6">
             <Link className="flex items-center gap-2 font-semibold" to="#">
               <Logos.Package className="h-6 w-6" />
               <span className="">Tasks</span>
@@ -159,6 +170,17 @@ function Tasks() {
               className="ml-auto h-8 w-8 rounded-full border border-gray-200 dark:border-gray-800"
               size="icon"
               variant="outline"
+              onClick={() => {
+                toast({
+                  title: "Scheduled: Catch up ",
+                  description: "Friday, February 10, 2023 at 5:57 PM",
+                  action: (
+                    <ToastAction altText="Goto schedule to undo">
+                      Undo
+                    </ToastAction>
+                  ),
+                });
+              }}
             >
               <Logos.Plus className="h-4 w-4" />
               <span className="sr-only">Add list</span>
@@ -181,17 +203,19 @@ function Tasks() {
                     {
                       <AccordionContent>
                         <div className="grid gap-2">
-                          {column.items.map((item) => (
-                            <div
-                              key={item.id}
-                              className="rounded-lg p-2 bg-gray-200 dark:bg-gray-700"
-                            >
-                              <h3 className="font-semibold">{item.title}</h3>
-                              <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">
-                                {item.description}
-                              </p>
-                            </div>
-                          ))}
+                          {tasks
+                            .filter((task) => task.column === column.name)
+                            .map((task) => (
+                              <div
+                                key={task.id}
+                                className="rounded-lg bg-gray-200 px-3 py-2 dark:bg-gray-700"
+                              >
+                                <h3 className="font-semibold">{task.title}</h3>
+                                <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">
+                                  {task.description}
+                                </p>
+                              </div>
+                            ))}
                         </div>
                       </AccordionContent>
                     }
@@ -215,38 +239,37 @@ function Tasks() {
           <main className="flex-1 flex items-start p-4 gap-4 overflow-auto">
             <div className="grid gap-4 w-full">
               {columns.map((column) => (
-                <div
-                  className="rounded-lg bg-gray-100 p-4 dark:bg-gray-800"
+                <SortableContext
+                  items={tasks.filter((task) => task.column === column.name)}
+                  strategy={verticalListSortingStrategy}
                   key={column.id}
                 >
-                  <div className="flex items-center gap-4">
-                    <Logos.GripHorizontal className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                    <h2 className="font-semibold text-lg">{column.title}</h2>
-                    <Button className="ml-auto rounded-full" size="icon">
-                      <Logos.Plus
-                        className="w-4 h-4"
-                        onClick={() => handleAddTask(column.id)}
-                      />
-                      <span className="sr-only">Add card</span>
-                    </Button>
-                  </div>
-                  <div className="grid gap-4 mt-4">
-                    <SortableContext
-                      id={column.id}
-                      items={column.items}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      {column.items.map((item) => (
-                        <SortableItem
-                          key={item.id}
-                          id={item.id}
-                          title={item.title}
-                          description={item.description}
+                  <div className="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
+                    <div className="flex items-center gap-4">
+                      <Logos.GripHorizontal className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                      <h2 className="font-semibold text-lg">{column.title}</h2>
+                      <Button className="ml-auto rounded-full" size="icon">
+                        <Logos.Plus
+                          className="w-4 h-4"
+                          onClick={() => handleAddTask(column.name)}
                         />
-                      ))}
-                    </SortableContext>
+                        <span className="sr-only">Add card</span>
+                      </Button>
+                    </div>
+                    <div className="grid gap-4 mt-4">
+                      {tasks
+                        .filter((task) => task.column === column.name)
+                        .map((task) => (
+                          <SortableItem
+                            key={task.id}
+                            id={task.id}
+                            title={task.title}
+                            description={task.description}
+                          />
+                        ))}
+                    </div>
                   </div>
-                </div>
+                </SortableContext>
               ))}
             </div>
           </main>
