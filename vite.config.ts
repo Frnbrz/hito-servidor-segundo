@@ -10,6 +10,7 @@ export default defineConfig((configEnv) => {
     server: {
       port: 3000,
     },
+
     test: {
       globals: true,
       environment: "happy-dom",
