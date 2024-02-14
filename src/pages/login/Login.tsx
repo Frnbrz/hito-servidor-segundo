@@ -9,9 +9,53 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+
+const schema = z.object({
+  email: z.string().email("Email no válido"),
+  password: z.string().min(3, "La contraseña debe tener al menos 3 caracteres"),
+});
+
 function Login() {
+  const SignUpSchema = z.object({
+    email: z.string().email(),
+    password: z.string().min(3).max(20),
+  });
+  type SignUpSchemaType = z.infer<typeof SignUpSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpSchemaType>({ resolver: zodResolver(schema) });
+
+  const onSubmit: SubmitHandler<SignUpSchemaType> = (data) => {
+    fetch("http://localhost:8080/api/v1/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW5hZ2VyQG1haWwuY29tIiwiaWF0IjoxNzA3OTEzNDc2LCJleHAiOjE3MDc5OTk4NzZ9.OUs3FXyiXiUSabzPzengJM_jPkdGvq7B4qWBvb7Fu2Y",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   return (
-    <div className="flex items-center justify-center flex-1">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex items-center justify-center flex-1"
+    >
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
@@ -21,13 +65,17 @@ function Login() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="username"
-              placeholder="Escribe tu username"
+              id="email"
+              placeholder="Escribe tu email"
               required
               type="text"
+              {...register("email")}
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email?.message}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
@@ -36,14 +84,24 @@ function Login() {
               placeholder="Escribe tu password"
               required
               type="password"
+              {...register("password")}
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm">
+                {errors?.password?.message}
+              </p>
+            )}
           </div>
         </CardContent>
         <CardFooter>
           <Button className="w-full">Login</Button>
         </CardFooter>
+        <a href="/register" className="text-center block p-4">
+          No tienes cuenta? Registrate
+        </a>
       </Card>
-    </div>
+    </form>
   );
 }
+
 export default Login;

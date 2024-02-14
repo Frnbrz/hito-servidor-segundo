@@ -1,5 +1,6 @@
 import { Fallback, Navbar, ThemeProvider } from "@/components";
 import { Login, Tasks } from "@/pages";
+import { Register } from "@/pages/register";
 import { ErrorBoundary } from "react-error-boundary";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
@@ -13,6 +14,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Tasks />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
             </Routes>
           </Router>
         </ErrorBoundary>
