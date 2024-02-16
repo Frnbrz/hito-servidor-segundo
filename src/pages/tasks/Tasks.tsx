@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { Task } from "@/types";
 import {
   DndContext,
   DragEndEvent,
@@ -27,38 +28,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Tasks() {
+  // const userState = useUserState((state) => state.user)
   const { toast } = useToast();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor)
   );
 
-  const [tasks, setTasks] = useState([
-    {
-      id: "1",
-      title: "Comprar Comida",
-      description: "description",
-      column: "todo",
-    },
-    {
-      id: "2",
-      title: "Comprar Comida 2",
-      description: "description",
-      column: "todo",
-    },
-    {
-      id: "3",
-      title: "Diseñar Landing Page",
-      description: "description",
-      column: "inProgress",
-    },
-    {
-      id: "4",
-      title: "Reporte",
-      description: "description",
-      column: "done",
-    },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const columns = [
     {
@@ -78,14 +55,12 @@ function Tasks() {
     },
   ];
 
-  console.log(tasks);
-
   function handleAddTask(columnId: string) {
     const newTask = {
       id: `${tasks.length + 1}`,
       title: "New Task",
       description: "description",
-      column: columnId,
+      status: columnId,
     };
     setTasks((tasks) => [...tasks, newTask]);
   }
@@ -107,13 +82,13 @@ function Tasks() {
         (task) => task.id === over?.id
       );
 
-      const sourceColumn = newTasks[sourceTaskIndex]?.column; // Ensure column exists
-      const targetColumn = newTasks[targetTaskIndex]?.column; // Ensure column exists
+      const sourceColumn = newTasks[sourceTaskIndex]?.status; // Ensure status exists
+      const targetColumn = newTasks[targetTaskIndex]?.status; // Ensure status exists
 
       const activeTask = newTasks[sourceTaskIndex];
 
       if (sourceColumn && targetColumn) {
-        activeTask.column = targetColumn;
+        activeTask.status = targetColumn;
       }
 
       return newTasks;
@@ -159,7 +134,7 @@ function Tasks() {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex min-h-[93vh] w-full">
+      <div className="flex min-h-[87vh] w-full">
         <div className="hidden lg:flex flex-col w-[300px] border-r bg-gray-100/40 dark:bg-gray-800/40">
           <div className="flex h-[56px] items-center border-b px-6">
             <Link className="flex items-center gap-2 font-semibold" to="#">
@@ -188,34 +163,42 @@ function Tasks() {
           </div>
           <div className="flex-1 overflow-auto py-2">
             <div className="flex flex-col gap-2">
-              {columns.map((column) => (
+              {columns.map((status) => (
                 <Accordion
                   type="single"
                   collapsible
                   className="w-full"
-                  key={column.id}
+                  key={status.id}
                 >
                   <AccordionItem
                     value="item-1"
                     className="rounded-lg bg-gray-100 px-3 py-2 dark:bg-gray-800"
                   >
-                    <AccordionTrigger>{column.title}</AccordionTrigger>
+                    <AccordionTrigger>{status.title}</AccordionTrigger>
                     {
                       <AccordionContent>
                         <div className="grid gap-2">
-                          {tasks
-                            .filter((task) => task.column === column.name)
-                            .map((task) => (
-                              <div
-                                key={task.id}
-                                className="rounded-lg bg-gray-200 px-3 py-2 dark:bg-gray-700"
-                              >
-                                <h3 className="font-semibold">{task.title}</h3>
-                                <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">
-                                  {task.description}
-                                </p>
-                              </div>
-                            ))}
+                          {tasks.length > 0 ? (
+                            tasks
+                              .filter((task) => task.status === status.name)
+                              .map((task) => (
+                                <div
+                                  key={task.id}
+                                  className="rounded-lg bg-gray-200 px-3 py-2 dark:bg-gray-700"
+                                >
+                                  <h3 className="font-semibold">
+                                    {task.title}
+                                  </h3>
+                                  <p className="text-sm/relaxed text-gray-500 dark:text-gray-400">
+                                    {task.description}
+                                  </p>
+                                </div>
+                              ))
+                          ) : (
+                            <div className="text-center text-gray-500 dark:text-gray-400">
+                              No tasks
+                            </div>
+                          )}
                         </div>
                       </AccordionContent>
                     }
@@ -238,27 +221,27 @@ function Tasks() {
           </header>
           <main className="flex-1 flex items-start p-4 gap-4 overflow-auto">
             <div className="grid gap-4 w-full">
-              {columns.map((column) => (
+              {columns.map((status) => (
                 <SortableContext
-                  items={tasks.filter((task) => task.column === column.name)}
+                  items={tasks.filter((task) => task.status === status.name)}
                   strategy={verticalListSortingStrategy}
-                  key={column.id}
+                  key={status.id}
                 >
                   <div className="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
                     <div className="flex items-center gap-4">
                       <Logos.GripHorizontal className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                      <h2 className="font-semibold text-lg">{column.title}</h2>
+                      <h2 className="font-semibold text-lg">{status.title}</h2>
                       <Button className="ml-auto rounded-full" size="icon">
                         <Logos.Plus
                           className="w-4 h-4"
-                          onClick={() => handleAddTask(column.name)}
+                          onClick={() => handleAddTask(status.name)}
                         />
                         <span className="sr-only">Add card</span>
                       </Button>
                     </div>
                     <div className="grid gap-4 mt-4">
                       {tasks
-                        .filter((task) => task.column === column.name)
+                        .filter((task) => task.status === status.name)
                         .map((task) => (
                           <SortableItem
                             key={task.id}

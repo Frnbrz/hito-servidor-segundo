@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUserState } from "@/zustand/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,6 +20,7 @@ const schema = z.object({
 });
 
 function Login() {
+  const login = useUserState((state) => state.login);
   const SignUpSchema = z.object({
     email: z.string().email(),
     password: z.string().min(3).max(20),
@@ -32,19 +34,17 @@ function Login() {
   } = useForm<SignUpSchemaType>({ resolver: zodResolver(schema) });
 
   const onSubmit: SubmitHandler<SignUpSchemaType> = (data) => {
-    fetch("http://localhost:8080/api/v1/auth/register", {
+    fetch("http://localhost:8080/api/v1/auth/authenticate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW5hZ2VyQG1haWwuY29tIiwiaWF0IjoxNzA3OTEzNDc2LCJleHAiOjE3MDc5OTk4NzZ9.OUs3FXyiXiUSabzPzengJM_jPkdGvq7B4qWBvb7Fu2Y",
       },
       body: JSON.stringify(data),
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Success:", data);
+        login(data);
       })
       .catch((error) => {
         console.error("Error:", error);

@@ -1,11 +1,12 @@
 import { ModeToggle } from "@/components/theme";
+import { useUserState } from "@/zustand/store";
 import { WavesIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import Logos from "../logo";
 import { Button } from "../ui";
 
 function Navbar() {
-  const user = undefined;
+  const user = useUserState((state) => state.user);
 
   const Routes = [
     {
@@ -14,10 +15,21 @@ function Navbar() {
     },
   ];
 
+  function logout(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ): void {
+    try {
+      event.preventDefault();
+      useUserState.getState().logout();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <nav className="flex flex-row items-center h-14 px-4 border-b gap-4 md:gap-6">
       <div className="flex flex-1 gap-4">
-        <Link className="flex items-center gap-2 text-lg font-semibold" to="#">
+        <Link className="flex items-center gap-2 text-lg font-semibold" to="/">
           <WavesIcon />
           <span>Magic Water</span>
         </Link>
@@ -35,12 +47,15 @@ function Navbar() {
       </div>
       <div className="flex items-center gap-4">
         <ModeToggle />
-        {user === undefined ? (
+        {user.email === "" ? (
           <Link to="/login">
             <Button variant="outline">Login</Button>
           </Link>
         ) : (
-          <Logos.LogOut />
+          <Button variant="outline" className="flex gap-2" onClick={logout}>
+            <Logos.LogOut />
+            Logout
+          </Button>
         )}
       </div>
     </nav>
