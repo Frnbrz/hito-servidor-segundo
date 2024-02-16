@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useUserState } from "@/zustand/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 const schema = z.object({
@@ -20,6 +21,7 @@ const schema = z.object({
 });
 
 function Login() {
+  const navigate = useNavigate();
   const login = useUserState((state) => state.login);
   const SignUpSchema = z.object({
     email: z.string().email(),
@@ -45,6 +47,7 @@ function Login() {
       .then((response) => response.json())
       .then((data) => {
         login(data);
+        navigate("/projects");
       })
       .catch((error) => {
         console.error("Error:", error);

@@ -10,8 +10,8 @@ function Navbar() {
 
   const Routes = [
     {
-      name: "Tasks",
-      path: "/tasks",
+      name: "Projects",
+      path: "/projects",
     },
   ];
 
